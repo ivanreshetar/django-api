@@ -19,3 +19,8 @@ To remove container from the Docker use:
 
 To run tests use this command:
 `docker-compose run --rm app sh -c "python manage.py test"`
+
+## Lint
+
+To run linting use this command:
+`docker-compose run --rm app sh -c "flake8"`
