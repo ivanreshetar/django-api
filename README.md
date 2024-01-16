@@ -2,7 +2,7 @@
 
 Recepies API built with Python and Django
 
-## Application use
+## Docker
 
 The app is running inside the Docker container, so to be able to use the app you need the Docker to be installed in your system.
 
@@ -14,6 +14,9 @@ To stop the server use:
 
 To remove container from the Docker use:
 `docker-compose down`
+
+To build or re-build the Docker container use:
+`docker-compose build`
 
 ## Tests
 
