@@ -31,3 +31,11 @@ To run linting use this command:
 ## API
 
 To view the API in the browser go to http://localhost:8000/api/docs/#/
+
+## DB
+
+To generate new DB migration files use this command:
+`docker-compose run --rm app sh -c "python manage.py makemigrations"`
+
+To apply all migrations to the DB use this command:
+`docker-compose run --rm app sh -c "python manage.py migrate"`
