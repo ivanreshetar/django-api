@@ -27,3 +27,7 @@ To run tests use this command:
 
 To run linting use this command:
 `docker-compose run --rm app sh -c "flake8"`
+
+## API
+
+To view the API in the browser go to http://localhost:8000/api/docs/#/
