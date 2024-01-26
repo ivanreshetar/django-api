@@ -1,6 +1,6 @@
 # django-api
 
-Recepies API built with Python and Django
+Recipes API built with Python and Django
 
 ## Docker
 
@@ -18,6 +18,9 @@ To remove container from the Docker use:
 To build or re-build the Docker container use:
 `docker-compose build`
 
+To create new app use:
+`docker-compose run --rm app sh -c "python manage.py startapp appname"`
+
 ## Tests
 
 To run tests use this command:
@@ -30,12 +33,12 @@ To run linting use this command:
 
 ## API
 
-To view the API in the browser go to http://localhost:8000/api/docs/#/
+To view the API docs in the browser go to http://localhost:8000/api/docs/#/
 
-## DB
+## Database
 
-To generate new DB migration files use this command:
+To generate new database migration files use this command:
 `docker-compose run --rm app sh -c "python manage.py makemigrations"`
 
-To apply all migrations to the DB use this command:
+To apply all migrations to the database use this command:
 `docker-compose run --rm app sh -c "python manage.py migrate"`
