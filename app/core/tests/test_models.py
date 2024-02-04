@@ -7,13 +7,18 @@ from decimal import Decimal
 from core import models
 
 
+def create_user(email='user@example.com', password='test123'):
+    '''Create a user'''
+    return get_user_model().objects.create_user(email, password)
+
+
 class ModelTests(TestCase):
     '''Test models'''
     def test_create_user_with_email_successful(self):
         '''Test creating a new user with an email is successful'''
         email = 'test@example.com'
         password = 'Testpass123'
-        user = get_user_model().objects.create_user(
+        user = create_user(
             email=email,
             password=password,
         )
@@ -29,13 +34,13 @@ class ModelTests(TestCase):
             ['test4@example.COM', 'test4@example.com'],
         ]
         for email, expected in sample_emails:
-            user = get_user_model().objects.create_user(email, 'test123')
+            user = create_user(email, 'test123')
             self.assertEqual(user.email, expected)
 
     def test_new_user_without_email_raises_error(self):
         '''Test creating user without email raises error'''
         with self.assertRaises(ValueError):
-            get_user_model().objects.create_user('', 'test123')
+            create_user('', 'test123')
 
     def test_create_new_superuser(self):
         '''Test creating a new superuser'''
@@ -48,7 +53,7 @@ class ModelTests(TestCase):
 
     def test_create_recipe(self):
         '''Test creating a recipe'''
-        user = get_user_model().objects.create_user(
+        user = create_user(
             'test@example.com',
             'testpass123',
         )
@@ -61,3 +66,13 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(recipe), recipe.title)
+
+    def test_create_tag(self):
+        '''Test creating a tag'''
+        user = create_user()
+        tag = models.Tag.objects.create(
+            user=user,
+            name='Tag1',
+        )
+
+        self.assertEqual(str(tag), tag.name)
