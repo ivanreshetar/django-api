@@ -227,3 +227,52 @@ class PrivateRecipeApiTests(TestCase):
                 user=self.user
             ).exists()
             self.assertTrue(exists)
+
+    def test_create_tag_on_update(self):
+        '''Test creating a tag on recipe update.'''
+        recipe = create_recipe(user=self.user)
+        payload = {
+            'title': 'Avocado lime cheesecake',
+            'tags': [{"name": 'Thai'}],
+        }
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        tag1 = Tag.objects.get(name='Thai', user=self.user)
+        self.assertIn(tag1, recipe.tags.all())
+
+    def test_update_recipe_assigned_tag(self):
+        '''Test assigning an existing tag when updating a recipe.'''
+        tag_breakfast = Tag.objects.create(user=self.user, name='Breakfast')
+        recipe = create_recipe(user=self.user)
+        recipe.tags.add(tag_breakfast)
+
+        tag_lunch = Tag.objects.create(user=self.user, name='Lunch')
+        payload = {
+            'title': 'Avocado lime cheesecake',
+            'tags': [{"name": tag_lunch.name}],
+        }
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(tag_lunch, recipe.tags.all())
+        self.assertNotIn(tag_breakfast, recipe.tags.all())
+
+    def test_clear_recipe_tags(self):
+        '''Test clearing a recipe tags.'''
+        tag_breakfast = Tag.objects.create(user=self.user, name='Breakfast')
+        recipe = create_recipe(user=self.user)
+        recipe.tags.add(tag_breakfast)
+
+        payload = {
+            'title': 'Avocado lime cheesecake',
+            'tags': [],
+        }
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(recipe.tags.count(), 0)
+        self.assertNotIn(tag_breakfast, recipe.tags.all())
