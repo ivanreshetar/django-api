@@ -325,3 +325,64 @@ class PrivateRecipeApiTests(TestCase):
                 user=self.user
             ).exists()
             self.assertTrue(exists)
+
+    def test_create_ingredient_on_recipe_update(self):
+        '''Test creating an ingredient on recipe update.'''
+        recipe = create_recipe(user=self.user)
+        payload = {
+            'title': 'Avocado lime cheesecake',
+            'ingredients': [{"name": 'Graham crackers'}],
+        }
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        ingredient1 = Ingredient.objects.get(
+            name='Graham crackers',
+            user=self.user
+        )
+        self.assertIn(ingredient1, recipe.ingredients.all())
+
+    def test_update_recipe_assigned_ingredient(self):
+        '''Test assigning an existing ingredient when updating a recipe.'''
+        ingredient_butter = Ingredient.objects.create(
+            user=self.user,
+            name='Butter'
+        )
+        recipe = create_recipe(user=self.user)
+        recipe.ingredients.add(ingredient_butter)
+
+        ingredient_milk = Ingredient.objects.create(
+            user=self.user,
+            name='Milk'
+        )
+        payload = {
+            'title': 'Avocado lime cheesecake',
+            'ingredients': [{"name": ingredient_milk.name}],
+        }
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(ingredient_milk, recipe.ingredients.all())
+        self.assertNotIn(ingredient_butter, recipe.ingredients.all())
+
+    def test_clear_recipe_ingredients(self):
+        '''Test clearing a recipe ingredients.'''
+        ingredient_butter = Ingredient.objects.create(
+            user=self.user,
+            name='Butter'
+        )
+        recipe = create_recipe(user=self.user)
+        recipe.ingredients.add(ingredient_butter)
+
+        payload = {
+            'title': 'Avocado lime cheesecake',
+            'ingredients': [],
+        }
+        url = detail_url(recipe.id)
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(recipe.ingredients.count(), 0)
+        self.assertNotIn(ingredient_butter, recipe.ingredients.all())
