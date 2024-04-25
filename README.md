@@ -42,3 +42,11 @@ To generate new database migration files use this command:
 
 To apply all migrations to the database use this command:
 `docker-compose run --rm app sh -c "python manage.py migrate"`
+
+## Deployment
+
+To start the server in deployed environment run:
+`docker-compose -f docker-compose-deploy.yml up`
+
+To stop the server in deployed environment run:
+`docker-compose -f docker-compose-deploy.yml dowm`
