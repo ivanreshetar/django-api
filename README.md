@@ -50,3 +50,9 @@ To start the server in deployed environment run:
 
 To stop the server in deployed environment run:
 `docker-compose -f docker-compose-deploy.yml dowm`
+
+After any change, re-build the app with command:
+`docker-compose -f docker-compose-deploy.yml build app`
+
+To re-start the server after changes run:
+`docker-compose -f docker-compose-deploy.yml up --no-deps -d app`
